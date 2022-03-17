@@ -182,6 +182,7 @@
             "location": "[resourceGroup().location]",
             "dependsOn": [
                 "[resourceId('Microsoft.Web/serverfarms', variables('appPlanName'))]",
+                "[resourceId('Microsoft.Storage/storageAccounts',parameters('storageName'))]",
                 "[resourceId('Microsoft.ServiceBus/namespaces/AuthorizationRules', variables('serviceBusName'),variables('serviceBusKey'))]"
             ],
             "kind": "functionapp,linux",
@@ -212,6 +213,18 @@
                     "functionAppScaleLimit": 0,
                     "minimumElasticInstanceCount": 1,
                     "appSettings": [
+                        {
+                            "name": "AzureWebJobsStorage",
+                            "value": "[listKeys(resourceId('Microsoft.Storage/storageAccounts',parameters('storageName')),'2015-08-01').primaryConnectionString]"
+                        },
+                        {
+                            "name": "FUNCTIONS_WORKER_RUNTIME",
+                            "value": "dotnet"
+                        },
+                        {
+                            "name":"FUNCTIONS_EXTENSION_VERSION",
+                            "value":"~4"
+                        },
                         {
                             "name": "ServiceBusConnection",
                             "value": "[listKeys(resourceId('Microsoft.ServiceBus/namespaces/AuthorizationRules',variables('serviceBusName'),variables('serviceBusKey')),'2015-08-01').primaryConnectionString]"
