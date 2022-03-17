@@ -10,6 +10,8 @@ on:
   workflow_dispatch:
 
 env:
+  RESOURCEGROUPNAME: 'ServiceBusEstimator'
+  ARM_TEMPLATES_PATH: 'src/Environment'
   AZURE_FUNCTIONAPP_PACKAGE_PATH: 'src/AzureServiceBusEstimator' # set this to the path to your web app project, defaults to the repository root
   DOTNET_VERSION: '6.0.x' # set this to the dotnet version to use
 
@@ -31,6 +33,25 @@ jobs:
           pushd './${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}'
           dotnet build --configuration Release --output ./output
           popd
+
+      - name: Azure authentication
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Create Azure Resource Group
+        run: |
+          if [ $(az group exists --name ${{ env.RESOURCEGROUPNAME }}) = false ]; then
+            az group create -n ${{ env.RESOURCEGROUPNAME }} -l ${{ env.LOCATION }}
+          fi
+
+      - uses: azure/arm-deploy@v1
+        id: createAzureSharedResources
+        with:
+          subscriptionId: ${{ secrets.SUBSCRIPTIONID }}
+          resourceGroupName: ${{ env.RESOURCEGROUPNAME }}
+          template: ${{ env.ARM_TEMPLATES_PATH }}/azuredeploy.json
+          parameters: 
 
       - name: 'Run Azure Functions Action'
         uses: Azure/functions-action@v1
