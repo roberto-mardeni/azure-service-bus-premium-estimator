@@ -45,12 +45,20 @@ jobs:
             az group create -n ${{ env.RESOURCEGROUPNAME }} -l ${{ env.LOCATION }}
           fi
 
+      - name: Get Time
+        id: time
+        uses: nanzm/get-time-action@v1.1
+        with:
+          timeZone: 8
+          format: 'YYYYMMDDHHmmss'
+
       - uses: azure/arm-deploy@v1
         id: createAzureSharedResources
         with:
           subscriptionId: ${{ secrets.SUBSCRIPTIONID }}
           resourceGroupName: ${{ env.RESOURCEGROUPNAME }}
           template: ${{ env.ARM_TEMPLATES_PATH }}/azuredeploy.json
+          deploymentName: 'AzureDeploy-${{ steps.time.outputs.time }}'
           parameters: 
 
       - name: 'Run Azure Functions Action'
