@@ -15,5 +15,13 @@
                 "excludedTypes": "Request"
             }
         }
+    },
+    "extensions": {
+        "serviceBus": {
+            "prefetchCount": 0,
+            "autoCompleteMessages": true,
+            "maxConcurrentCalls": 8,
+            "maxConcurrentSessions": 4
+        }
     }
 }
