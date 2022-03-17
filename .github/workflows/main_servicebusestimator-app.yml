@@ -29,6 +29,7 @@ jobs:
         shell: bash
         run: |
           pushd './${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}'
+          cd src/AzureServiceBusEstimator
           dotnet build --configuration Release --output ./output
           popd
 
