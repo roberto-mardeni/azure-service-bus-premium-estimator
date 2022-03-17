@@ -40,3 +40,11 @@ jobs:
           slot-name: 'Production'
           package: '${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}/output'
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_E76E1ED079124396B3F4B58FEC948672 }}
+
+  test:
+    needs: build-and-deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: 'Trigger stress test orchestrator'
+        run: |
+          curl -X POST -H "Content-Type: application/json" -d '8000' https://servicebusestimator-app.azurewebsites.net/api/orchestrators/startStressTests
