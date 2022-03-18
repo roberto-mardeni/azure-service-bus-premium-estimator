@@ -11,7 +11,7 @@ Write-Host "Starting Test"
 $payload = @{
     numberOfTests = $tests
     minMessageSize = $min
-    maxMessafgeSize = $max
+    maxMessageSize = $max
 }
 
 $response = Invoke-RestMethod -UseBasicParsing -Method Post -ContentType "application/json" -Body ($payload | ConvertTo-Json) -Uri $url
