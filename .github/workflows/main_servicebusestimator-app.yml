@@ -74,5 +74,6 @@ jobs:
     runs-on: windows-latest
     steps:
       - name: 'Execute Stress Test'
-        run: 'src/Environment/runTests.ps1 -url https://servicebusestimator-app.azurewebsites.net/api/orchestrators/startStressTests'
         shell: pwsh
+        run: |
+          .\src\Environment\runTests.ps1 -url https://servicebusestimator-app.azurewebsites.net/api/orchestrators/startStressTests
