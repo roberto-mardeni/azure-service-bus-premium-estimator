@@ -1,9 +1,9 @@
 using Microsoft.Azure.Functions.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection;
 
-[assembly: FunctionsStartup(typeof(MyNamespace.Startup))]
+[assembly: FunctionsStartup(typeof(My.AzureServiceBusEstimator.Startup))]
 
-namespace MyNamespace
+namespace My.AzureServiceBusEstimator
 {
     public class Startup : FunctionsStartup
     {
