@@ -55,23 +55,7 @@ namespace My.AzureServiceBusEstimator
 
             for (int i = 0; i < stressTestParameters.NumberOfTests; i++)
             {
-                int payload = 0;
-                switch (random.Next(stressTestParameters.MinMessageSize, stressTestParameters.MaxMessageSize))
-                {
-                    case 1:
-                        payload = 1;
-                        break;
-                    case 2:
-                        payload = 2;
-                        break;
-                    case 3:
-                        payload = 5;
-                        break;
-                    case 4:
-                        payload = 10;
-                        break;
-                }
-                payloads.Add(payload);
+                payloads.Add(random.Next(stressTestParameters.MinMessageSize, stressTestParameters.MaxMessageSize));
             }
 
             return payloads.ToArray();
