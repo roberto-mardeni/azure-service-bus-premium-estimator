@@ -1,12 +1,20 @@
 param(
     $url="",
-    $payload="100",
+    $tests=10,
+    $min=1,
+    $max=20,
     $waitTime=5
 )
 
 Write-Host "Starting Test"
 
-$response = Invoke-RestMethod -UseBasicParsing -Method Post -ContentType "application/json" -Body $payload -Uri $url
+$payload = @{
+    numberOfTests = $tests
+    minMessageSize = $min
+    maxMessafgeSize = $max
+}
+
+$response = Invoke-RestMethod -UseBasicParsing -Method Post -ContentType "application/json" -Body ($payload | ConvertTo-Json) -Uri $url
 
 Write-Host $response
 
