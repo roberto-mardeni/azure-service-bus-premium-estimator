@@ -182,6 +182,7 @@
             "location": "[resourceGroup().location]",
             "dependsOn": [
                 "[resourceId('Microsoft.Web/serverfarms', variables('appPlanName'))]",
+                "[resourceId('microsoft.insights/components', variables('appInsightsName'))]",
                 "[resourceId('Microsoft.Storage/storageAccounts',parameters('storageName'))]",
                 "[resourceId('Microsoft.ServiceBus/namespaces/AuthorizationRules', variables('serviceBusName'),variables('serviceBusKey'))]"
             ],
@@ -222,12 +223,20 @@
                             "value": "dotnet"
                         },
                         {
-                            "name":"FUNCTIONS_EXTENSION_VERSION",
-                            "value":"~4"
+                            "name": "FUNCTIONS_EXTENSION_VERSION",
+                            "value": "~4"
                         },
                         {
                             "name": "ServiceBusConnection",
                             "value": "[listKeys(resourceId('Microsoft.ServiceBus/namespaces/AuthorizationRules',variables('serviceBusName'),variables('serviceBusKey')),'2015-08-01').primaryConnectionString]"
+                        },
+                        {
+                            "name": "APPINSIGHTS_INSTRUMENTATIONKEY",
+                            "value": "[reference(concat('microsoft.insights/components/', variables('appInsightsName'))).InstrumentationKey]"
+                        },
+                        {
+                            "name": "APPLICATIONINSIGHTS_CONNECTION_STRING",
+                            "value": "[concat('InstrumentationKey=',reference(concat('microsoft.insights/components/', variables('appInsightsName'))).InstrumentationKey,';IngestionEndpoint=https://',resourceGroup().location,'-5.in.applicationinsights.azure.com/')]"
                         }
                     ]
                 },
