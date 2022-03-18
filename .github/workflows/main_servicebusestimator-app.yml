@@ -73,6 +73,9 @@ jobs:
     needs: build-and-deploy
     runs-on: windows-latest
     steps:
+      - name: 'Checkout GitHub Action'
+        uses: actions/checkout@v2
+
       - name: 'Execute Stress Test'
         shell: pwsh
         run: |
