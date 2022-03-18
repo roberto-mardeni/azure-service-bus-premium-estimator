@@ -26,11 +26,11 @@ namespace My.AzureServiceBusEstimator
         public async Task<long> RunOrchestrator(
             [OrchestrationTrigger] IDurableOrchestrationContext context)
         {
-            int numberOfTests = context.GetInput<int>();
+            var stressTestParameters = context.GetInput<StressTestParameters>();
 
             int[] payloads = await context.CallActivityAsync<int[]>(
                 "PreparePayloads",
-                numberOfTests);
+                stressTestParameters);
 
             var tasks = new Task<int>[payloads.Length];
             for (int i = 0; i < payloads.Length; i++)
@@ -47,16 +47,16 @@ namespace My.AzureServiceBusEstimator
         }
 
         [FunctionName("PreparePayloads")]
-        public int[] PreparePayloads([ActivityTrigger] int numberOfTests, ILogger log)
+        public int[] PreparePayloads([ActivityTrigger] StressTestParameters stressTestParameters, ILogger log)
         {
             List<int> payloads = new List<int>();
 
-            log.LogInformation($"Preparing {numberOfTests} payloads!");
+            log.LogInformation($"Preparing {stressTestParameters.NumberOfTests} payloads!");
 
-            for (int i = 0; i < numberOfTests; i++)
+            for (int i = 0; i < stressTestParameters.NumberOfTests; i++)
             {
                 int payload = 0;
-                switch (random.Next(1, 4))
+                switch (random.Next(stressTestParameters.MinMessageSize, stressTestParameters.MaxMessageSize))
                 {
                     case 1:
                         payload = 1;

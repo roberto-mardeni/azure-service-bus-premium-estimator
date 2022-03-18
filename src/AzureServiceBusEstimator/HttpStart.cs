@@ -21,7 +21,7 @@ namespace My.AzureServiceBusEstimator
             ILogger log)
         {
             // Function input comes from the request content.
-            object eventData = await req.ReadAsStringAsync();
+            var eventData = JsonConvert.DeserializeObject<StressTestParameters>(await req.ReadAsStringAsync());
             //req.Host
             string instanceId = await starter.StartNewAsync(functionName, eventData);
 
