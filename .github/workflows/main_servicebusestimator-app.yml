@@ -68,7 +68,6 @@ jobs:
           app-name: 'servicebusestimator-app'
           slot-name: 'Production'
           package: '${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}/output'
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_E76E1ED079124396B3F4B58FEC948672 }}
 
   test:
     needs: build-and-deploy
