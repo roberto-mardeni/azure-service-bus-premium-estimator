@@ -75,4 +75,4 @@ jobs:
     steps:
       - name: 'Trigger stress test orchestrator'
         run: |
-          curl -X POST -H "Content-Type: application/json" -d '8000' https://servicebusestimator-app.azurewebsites.net/api/orchestrators/startStressTests
+          curl -X POST -H "Content-Type: application/json" -d '100' https://servicebusestimator-app.azurewebsites.net/api/orchestrators/startStressTests
