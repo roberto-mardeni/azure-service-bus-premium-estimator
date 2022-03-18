@@ -1,6 +1,6 @@
 param(
     $url="",
-    $tests=10,
+    $tests=10000,
     $min=1,
     $max=20,
     $waitTime=5
