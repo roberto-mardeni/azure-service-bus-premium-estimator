@@ -124,9 +124,6 @@
                 "Flow_Type": "Redfield",
                 "Request_Source": "IbizaAIExtension",
                 "RetentionInDays": 90,
-                "IngestionMode": "ApplicationInsights",
-                "publicNetworkAccessForIngestion": "Enabled",
-                "publicNetworkAccessForQuery": "Enabled",
                 "WorkspaceResourceId": "[resourceId('Microsoft.OperationalInsights/workspaces',variables('logAnalyticsName'))]"
             }
         },
