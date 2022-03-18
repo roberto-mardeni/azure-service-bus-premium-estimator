@@ -26,7 +26,7 @@ namespace My.AzureServiceBusEstimator
             }
             else
             {
-                throw new ArgumentException("Invalid sizeInMb provided, only 1,2,5 or 10 supported!");
+                throw new ArgumentException("Invalid sizeInMb provided, 1-20 supported!");
             }
         }
     }

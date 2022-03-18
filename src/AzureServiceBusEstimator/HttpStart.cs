@@ -22,12 +22,20 @@ namespace My.AzureServiceBusEstimator
         {
             // Function input comes from the request content.
             var eventData = JsonConvert.DeserializeObject<StressTestParameters>(await req.ReadAsStringAsync());
-            //req.Host
-            string instanceId = await starter.StartNewAsync(functionName, eventData);
 
-            log.LogInformation($"Started orchestration with ID = '{instanceId}'.");
+            if (eventData.NumberOfTests >= 1 && eventData.MinMessageSize >= 1 && eventData.MaxMessageSize <= 20)
+            {
+                //req.Host
+                string instanceId = await starter.StartNewAsync(functionName, eventData);
 
-            return starter.CreateCheckStatusResponse(req, instanceId);
+                log.LogInformation($"Started orchestration with ID = '{instanceId}'.");
+
+                return starter.CreateCheckStatusResponse(req, instanceId);
+            }
+            else
+            {
+                return new BadRequestObjectResult("Invalid Stress Test Parameters");
+            }
         }
     }
 }
