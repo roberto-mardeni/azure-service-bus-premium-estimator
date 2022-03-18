@@ -71,8 +71,8 @@ jobs:
 
   test:
     needs: build-and-deploy
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
     steps:
-      - name: 'Trigger stress test orchestrator'
-        run: |
-          curl -X POST -H "Content-Type: application/json" -d '100' https://servicebusestimator-app.azurewebsites.net/api/orchestrators/startStressTests
+      - name: 'Execute Stress Test'
+        run: 'src/Environment/runTests.ps1 -url https://servicebusestimator-app.azurewebsites.net/api/orchestrators/startStressTests'
+        shell: pwsh
