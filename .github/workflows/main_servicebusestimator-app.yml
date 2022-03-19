@@ -11,9 +11,10 @@ on:
 
 env:
   RESOURCEGROUPNAME: 'ServiceBusEstimator'
+  LOCATION: 'eastus'
   ARM_TEMPLATES_PATH: 'src/Environment'
-  AZURE_FUNCTIONAPP_PACKAGE_PATH: 'src/AzureServiceBusEstimator' # set this to the path to your web app project, defaults to the repository root
-  DOTNET_VERSION: '6.0.x' # set this to the dotnet version to use
+  AZURE_FUNCTIONAPP_PACKAGE_PATH: 'src/AzureServiceBusEstimator'
+  DOTNET_VERSION: '6.0.x'
 
 jobs:
   build-and-deploy:
