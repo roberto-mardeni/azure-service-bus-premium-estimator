@@ -81,16 +81,16 @@ jobs:
         run: |
           .\src\Environment\runTests.ps1 -url https://servicebusestimator-app.azurewebsites.net/api/orchestrators/startStressTests
 
-  cleanup:
-    needs: test
-    runs-on: ubuntu-latest
-    steps:
-      - name: Azure authentication
-        uses: azure/login@v1
-        with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
+  # cleanup:
+  #   needs: test
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Azure authentication
+  #       uses: azure/login@v1
+  #       with:
+  #         creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-      - name: Delete Azure Resource Group
-        run: |
-          az group delete -n ${{ env.RESOURCEGROUPNAME }} -y --no-wait
+  #     - name: Delete Azure Resource Group
+  #       run: |
+  #         az group delete -n ${{ env.RESOURCEGROUPNAME }} -y --no-wait
 
