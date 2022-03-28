@@ -244,7 +244,7 @@
                         },
                         {
                             "name": "ServiceBusConnection",
-                            "value": "[listKeys(resourceId('Microsoft.ServiceBus/namespaces/AuthorizationRules',variables('serviceBusName'),variables('serviceBusKey')),'2015-08-01').primaryConnectionString]"
+                            "value": "[concat(listKeys(resourceId('Microsoft.ServiceBus/namespaces/AuthorizationRules',variables('serviceBusName'),variables('serviceBusKey')),'2015-08-01').primaryConnectionString, ';OperationTimeout=00:10:00')]"
                         },
                         {
                             "name": "APPINSIGHTS_INSTRUMENTATIONKEY",
