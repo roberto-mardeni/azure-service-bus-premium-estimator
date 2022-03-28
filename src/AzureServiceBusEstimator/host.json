@@ -1,6 +1,6 @@
 {
     "version": "2.0",
-    "functionTimeout": "-1",
+    "functionTimeout": "00:10:00",
     "healthMonitor": {
         "enabled": true,
         "healthCheckInterval": "00:00:10",
