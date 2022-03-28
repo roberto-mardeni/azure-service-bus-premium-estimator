@@ -27,8 +27,8 @@
             },
             "prefetchCount": 0,
             "autoCompleteMessages": true,
-            "maxConcurrentCalls": 8,
-            "maxConcurrentSessions": 4,
+            "maxConcurrentCalls": 16,
+            "maxConcurrentSessions": 8,
             "maxAutoLockRenewalDuration": "01:00:00",
             "sessionIdleTimeout": "01:00:00"
         }
