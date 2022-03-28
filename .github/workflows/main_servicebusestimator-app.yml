@@ -89,7 +89,6 @@ jobs:
   cleanup:
     needs: test
     runs-on: ubuntu-latest
-    if: ${{ env.CLEANUP_ENABLED }}
     steps:
       - name: Azure authentication
         uses: azure/login@v1
@@ -97,5 +96,6 @@ jobs:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
       - name: Delete Azure Resource Group
+        if: ${{ env.CLEANUP_ENABLED }}
         run: |
           az group delete -n ${{ env.RESOURCEGROUPNAME }} -y --no-wait
