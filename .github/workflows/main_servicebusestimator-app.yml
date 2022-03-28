@@ -15,6 +15,9 @@ env:
   ARM_TEMPLATES_PATH: 'src/Environment'
   AZURE_FUNCTIONAPP_PACKAGE_PATH: 'src/AzureServiceBusEstimator'
   DOTNET_VERSION: '6.0.x'
+  NUMBER_OF_TESTS: 100
+  MIN_SIZE: 1
+  MAX_SIZE: 20
 
 jobs:
   build-and-deploy:
@@ -80,7 +83,7 @@ jobs:
       - name: 'Execute Stress Test'
         shell: pwsh
         run: |
-          .\src\Environment\runTests.ps1 -url https://servicebusestimator-app.azurewebsites.net/api/orchestrators/startStressTests
+          .\src\Environment\runTests.ps1 -url https://servicebusestimator-app.azurewebsites.net/api/orchestrators/startStressTests -tests ${{ env.NUMBER_OF_TESTS }} -min ${{ env.MIN_SIZE }} -max ${{ env.MAX_SIZE }}
 
   # cleanup:
   #   needs: test
