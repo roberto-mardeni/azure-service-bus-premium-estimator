@@ -89,7 +89,7 @@ jobs:
   cleanup:
     needs: test
     runs-on: ubuntu-latest
-    if: '${{ env.CLEANUP_ENABLED }}' == 'true'
+    if: ${{ env.CLEANUP_ENABLED }}
     steps:
       - name: Azure authentication
         uses: azure/login@v1
