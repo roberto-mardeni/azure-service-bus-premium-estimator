@@ -18,6 +18,7 @@ env:
   NUMBER_OF_TESTS: 10000
   MIN_SIZE: 1
   MAX_SIZE: 20
+  CLEANUP_ENABLED: false
 
 jobs:
   build-and-deploy:
@@ -88,6 +89,7 @@ jobs:
   cleanup:
     needs: test
     runs-on: ubuntu-latest
+    if: ${{ env.CLEANUP_ENABLED }}
     steps:
       - name: Azure authentication
         uses: azure/login@v1
