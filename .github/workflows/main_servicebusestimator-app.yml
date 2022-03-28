@@ -15,7 +15,7 @@ env:
   ARM_TEMPLATES_PATH: 'src/Environment'
   AZURE_FUNCTIONAPP_PACKAGE_PATH: 'src/AzureServiceBusEstimator'
   DOTNET_VERSION: '6.0.x'
-  NUMBER_OF_TESTS: 100
+  NUMBER_OF_TESTS: 1000
   MIN_SIZE: 1
   MAX_SIZE: 20
 
