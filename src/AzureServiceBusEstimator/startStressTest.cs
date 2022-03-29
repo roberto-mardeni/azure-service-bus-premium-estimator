@@ -67,8 +67,12 @@ namespace My.AzureServiceBusEstimator
             var baseUrl = Environment.GetEnvironmentVariable("WEBSITE_HOSTNAME");
             var scheme = baseUrl.StartsWith("localhost") ? "http" : "https";
             var url = $"{scheme}://{baseUrl}/api/post/{payload}";
+            var sleep = random.Next(1, payload) * 1000;
 
-            log.LogInformation($"Executing payload {payload}, with {url}");
+            log.LogInformation($"Executing payload {payload} after {sleep}ms, with {url}");
+
+            // Adding a random sleep time to avoid flooding the Service Bus
+            System.Threading.Thread.Sleep(sleep);
 
             var response = await this._client.GetAsync(url);
 
