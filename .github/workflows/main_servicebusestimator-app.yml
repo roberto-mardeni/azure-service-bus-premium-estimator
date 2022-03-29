@@ -11,6 +11,7 @@ on:
 
 env:
   RESOURCEGROUPNAME: 'ServiceBusEstimator'
+  SERVICEBUSNAME: 'servicebusestimator-bus'
   LOCATION: 'eastus'
   ARM_TEMPLATES_PATH: 'src/Environment'
   AZURE_FUNCTIONAPP_PACKAGE_PATH: 'src/AzureServiceBusEstimator'
@@ -84,7 +85,7 @@ jobs:
       - name: 'Execute Stress Test'
         shell: pwsh
         run: |
-          .\src\Environment\runTests.ps1 -url https://servicebusestimator-app.azurewebsites.net/api/orchestrators/startStressTests -tests ${{ env.NUMBER_OF_TESTS }} -min ${{ env.MIN_SIZE }} -max ${{ env.MAX_SIZE }}
+          .\src\Environment\runTests.ps1 -url https://servicebusestimator-app.azurewebsites.net/api/orchestrators/startStressTests -tests ${{ env.NUMBER_OF_TESTS }} -min ${{ env.MIN_SIZE }} -max ${{ env.MAX_SIZE }} -resourceGroupName ${{ env.RESOURCEGROUPNAME }} -serviceBusName ${{ env.SERVICEBUSNAME }}
 
   cleanup:
     needs: test
