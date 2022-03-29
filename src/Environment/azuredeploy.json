@@ -349,6 +349,9 @@
             "apiVersion": "2021-05-01-preview",
             "name": "[variables('serviceBusAutoScaleName')]",
             "location": "[resourceGroup().location]",
+            "dependsOn": [
+                "[resourceId('Microsoft.ServiceBus/namespaces', variables('serviceBusName'))]"
+            ],
             "properties": {
                 "profiles": [
                     {
