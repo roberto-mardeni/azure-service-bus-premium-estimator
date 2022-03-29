@@ -82,6 +82,11 @@ jobs:
       - name: 'Checkout GitHub Action'
         uses: actions/checkout@v2
 
+      - name: Azure authentication
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
       - name: 'Execute Stress Test'
         shell: pwsh
         run: |
