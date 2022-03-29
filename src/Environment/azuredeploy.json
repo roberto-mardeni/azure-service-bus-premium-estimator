@@ -17,12 +17,13 @@
     },
     "variables": {
         "serviceBusName": "[concat(parameters('name'),'-bus')]",
+        "serviceBusAutoScaleName": "[concat(parameters('name'),'-bus-autoscale')]",
         "serviceBusKey": "EstimatorAccessKey",
         "logAnalyticsName": "[concat(parameters('name'),'-law')]",
         "appInsightsName": "[concat(parameters('name'),'-ai')]",
         "appPlanName": "[concat(parameters('name'),'-plan')]",
         "appName": "[concat(parameters('name'),'-app')]",
-        "autoScaleName": "[concat(parameters('name'),'-app-as')]"
+        "appPlanAutoScaleName": "[concat(parameters('name'),'-plan-autoscale')]"
     },
     "functions": [],
     "resources": [
@@ -274,7 +275,7 @@
         {
             "type": "microsoft.insights/autoscalesettings",
             "apiVersion": "2021-05-01-preview",
-            "name": "[variables('autoScaleName')]",
+            "name": "[variables('appPlanAutoScaleName')]",
             "location": "[resourceGroup().location]",
             "dependsOn": [
                 "[resourceId('Microsoft.Web/serverfarms', variables('appPlanName'))]"
@@ -335,8 +336,77 @@
                     }
                 ],
                 "enabled": true,
-                "name": "[variables('autoScaleName')]",
+                "name": "[variables('appPlanAutoScaleName')]",
                 "targetResourceUri": "[resourceId('Microsoft.Web/serverfarms', variables('appPlanName'))]",
+                "notifications": [],
+                "predictiveAutoscalePolicy": {
+                    "scaleMode": "Disabled"
+                }
+            }
+        },
+        {
+            "type": "microsoft.insights/autoscalesettings",
+            "apiVersion": "2021-05-01-preview",
+            "name": "[variables('serviceBusAutoScaleName')]",
+            "location": "[resourceGroup().location]",
+            "properties": {
+                "profiles": [
+                    {
+                        "name": "Auto created scale condition",
+                        "capacity": {
+                            "minimum": "1",
+                            "maximum": "4",
+                            "default": "1"
+                        },
+                        "rules": [
+                            {
+                                "metricTrigger": {
+                                    "metricName": "UserErrors",
+                                    "metricNamespace": "microsoft.servicebus/namespaces",
+                                    "metricResourceUri": "[resourceId('Microsoft.ServiceBus/namespaces', variables('serviceBusName'))]",
+                                    "timeGrain": "PT1M",
+                                    "statistic": "Average",
+                                    "timeWindow": "PT10M",
+                                    "timeAggregation": "Average",
+                                    "operator": "GreaterThan",
+                                    "threshold": 10,
+                                    "dimensions": [],
+                                    "dividePerInstance": false
+                                },
+                                "scaleAction": {
+                                    "direction": "Increase",
+                                    "type": "ServiceAllowedNextValue",
+                                    "value": "1",
+                                    "cooldown": "PT5M"
+                                }
+                            },
+                            {
+                                "metricTrigger": {
+                                    "metricName": "UserErrors",
+                                    "metricNamespace": "microsoft.servicebus/namespaces",
+                                    "metricResourceUri": "[resourceId('Microsoft.ServiceBus/namespaces', variables('serviceBusName'))]",
+                                    "timeGrain": "PT1M",
+                                    "statistic": "Average",
+                                    "timeWindow": "PT10M",
+                                    "timeAggregation": "Average",
+                                    "operator": "LessThan",
+                                    "threshold": 5,
+                                    "dimensions": [],
+                                    "dividePerInstance": false
+                                },
+                                "scaleAction": {
+                                    "direction": "Decrease",
+                                    "type": "ServiceAllowedNextValue",
+                                    "value": "1",
+                                    "cooldown": "PT5M"
+                                }
+                            }
+                        ]
+                    }
+                ],
+                "enabled": true,
+                "name": "[variables('serviceBusAutoScaleName')]",
+                "targetResourceUri": "[resourceId('Microsoft.ServiceBus/namespaces', variables('serviceBusName'))]",
                 "notifications": [],
                 "predictiveAutoscalePolicy": {
                     "scaleMode": "Disabled"
