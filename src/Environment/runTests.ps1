@@ -18,7 +18,8 @@ $payload = @{
 
 $response = Invoke-RestMethod -UseBasicParsing -Method Post -ContentType "application/json" -Body ($payload | ConvertTo-Json) -Uri $url
 
-Write-Host $response
+Write-Host "Test Started:"
+$response | ConvertTo-Json -Depth 10
 
 Start-Sleep -Seconds $waitTime
 
