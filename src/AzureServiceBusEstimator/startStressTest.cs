@@ -13,14 +13,10 @@ namespace My.AzureServiceBusEstimator
 {
     public class startStressTests
     {
-        private readonly HttpClient _client;
-        private readonly Random random;
+        private static HttpClient _client = new HttpClient();
+        private static Random random = new Random();
 
-        public startStressTests(IHttpClientFactory httpClientFactory)
-        {
-            this._client = httpClientFactory.CreateClient();
-            this.random = new Random();
-        }
+        public startStressTests() { }
 
         [FunctionName("startStressTests")]
         public async Task<long> RunOrchestrator(
@@ -74,7 +70,7 @@ namespace My.AzureServiceBusEstimator
             // Adding a random sleep time to avoid flooding the Service Bus
             System.Threading.Thread.Sleep(sleep);
 
-            var response = await this._client.GetAsync(url);
+            var response = await _client.GetAsync(url);
 
             return payload;
         }
