@@ -16,10 +16,9 @@ env:
   ARM_TEMPLATES_PATH: 'src/Environment'
   AZURE_FUNCTIONAPP_PACKAGE_PATH: 'src/AzureServiceBusEstimator'
   DOTNET_VERSION: '6.0.x'
-  NUMBER_OF_TESTS: 10000
+  NUMBER_OF_TESTS: 1000
   MIN_SIZE: 1
   MAX_SIZE: 20
-  CLEANUP_ENABLED: false
 
 jobs:
   build-and-deploy:
@@ -92,16 +91,15 @@ jobs:
         run: |
           .\src\Environment\runTests.ps1 -url https://servicebusestimator-app.azurewebsites.net/api/orchestrators/startStressTests -tests ${{ env.NUMBER_OF_TESTS }} -min ${{ env.MIN_SIZE }} -max ${{ env.MAX_SIZE }} -resourceGroupName ${{ env.RESOURCEGROUPNAME }} -serviceBusName ${{ env.SERVICEBUSNAME }}
 
-  cleanup:
-    needs: test
-    runs-on: ubuntu-latest
-    steps:
-      - name: Azure authentication
-        uses: azure/login@v1
-        with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
+  # cleanup:
+  #   needs: test
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Azure authentication
+  #       uses: azure/login@v1
+  #       with:
+  #         creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-      - name: Delete Azure Resource Group
-        if: ${{ env.CLEANUP_ENABLED }}
-        run: |
-          az group delete -n ${{ env.RESOURCEGROUPNAME }} -y --no-wait
+  #     - name: Delete Azure Resource Group
+  #       run: |
+  #         az group delete -n ${{ env.RESOURCEGROUPNAME }} -y --no-wait
