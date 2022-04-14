@@ -37,7 +37,10 @@ while($statusResponse.runtimeStatus -ne "Completed") {
     }
 }
 
+Write-Host
+Write-Host "Test Completed:"
 Write-Host $statusResponse
+Write-Host
 
 $capacityUnits = az servicebus namespace show -g $resourceGroupName -n $serviceBusName --query "sku.capacity"
 Write-host "Service Bus Capacity Units: $capacityUnits"
