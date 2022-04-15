@@ -424,8 +424,8 @@
             "name": "[variables('receiverPlanName')]",
             "location": "[resourceGroup().location]",
             "sku": {
-                "name": "Dynamic",
-                "tier": "Y1"
+                "name": "Y1",
+                "tier": "Dynamic"
             },
             "kind": "linux",
             "properties": {
