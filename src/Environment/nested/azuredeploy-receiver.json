@@ -27,16 +27,17 @@
             "name": "[parameters('planName')]",
             "location": "[resourceGroup().location]",
             "sku": {
-                "name": "Y1",
-                "tier": "Dynamic"
+                "name": "EP2",
+                "tier": "ElasticPremium",
+                "size": "EP2",
+                "family": "EP",
+                "capacity": 1
             },
-            "kind": "linux",
+            "kind": "elastic",
             "properties": {
                 "name": "[parameters('planName')]",
-                "workerSize": 0,
-                "workerSizeId": 0,
-                "numberOfWorkers": 1,
-                "reserved": true
+                "elasticScaleEnabled": true,
+                "maximumElasticWorkerCount": 200
             }
         },
         {
