@@ -14,7 +14,8 @@ env:
   SERVICEBUSNAME: 'servicebusestimator-bus'
   LOCATION: 'eastus'
   ARM_TEMPLATES_PATH: 'src/Environment'
-  AZURE_FUNCTIONAPP_PACKAGE_PATH: 'src/AzureServiceBusEstimator'
+  ESTIMATOR_PACKAGE_PATH: 'src/AzureServiceBusEstimator'
+  RECEIVER_PACKAGE_PATH: 'src/AzureServiceBusReceiver'
   DOTNET_VERSION: '6.0.x'
   NUMBER_OF_TESTS: 1000
   MIN_SIZE: 1
@@ -32,10 +33,17 @@ jobs:
         with:
           dotnet-version: ${{ env.DOTNET_VERSION }}
 
-      - name: 'Resolve Project Dependencies Using Dotnet'
+      - name: 'Build Estimator'
         shell: bash
         run: |
-          pushd './${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}'
+          pushd './${{ env.ESTIMATOR_PACKAGE_PATH }}'
+          dotnet build --configuration Release --output ./output
+          popd
+
+      - name: 'Build Receiver'
+        shell: bash
+        run: |
+          pushd './${{ env.RECEIVER_PACKAGE_PATH }}'
           dotnet build --configuration Release --output ./output
           popd
 
@@ -66,13 +74,21 @@ jobs:
           deploymentName: 'AzureDeploy-${{ steps.time.outputs.time }}'
           parameters: 
 
-      - name: 'Run Azure Functions Action'
+      - name: 'Deploy Estimator'
         uses: Azure/functions-action@v1
         id: fa
         with:
           app-name: 'servicebusestimator-app'
           slot-name: 'Production'
-          package: '${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}/output'
+          package: '${{ env.ESTIMATOR_PACKAGE_PATH }}/output'
+
+      - name: 'Deploy Receiver'
+        uses: Azure/functions-action@v1
+        id: fa
+        with:
+          app-name: 'servicebusestimatorreceiver-app'
+          slot-name: 'Production'
+          package: '${{ env.RECEIVER_PACKAGE_PATH }}/output'
 
   test:
     needs: build-and-deploy
@@ -91,15 +107,15 @@ jobs:
         run: |
           .\src\Environment\runTests.ps1 -url https://servicebusestimator-app.azurewebsites.net/api/orchestrators/startStressTests -tests ${{ env.NUMBER_OF_TESTS }} -min ${{ env.MIN_SIZE }} -max ${{ env.MAX_SIZE }} -resourceGroupName ${{ env.RESOURCEGROUPNAME }} -serviceBusName ${{ env.SERVICEBUSNAME }}
 
-  cleanup:
-    needs: test
-    runs-on: ubuntu-latest
-    steps:
-      - name: Azure authentication
-        uses: azure/login@v1
-        with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
+  # cleanup:
+  #   needs: test
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Azure authentication
+  #       uses: azure/login@v1
+  #       with:
+  #         creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-      - name: Delete Azure Resource Group
-        run: |
-          az group delete -n ${{ env.RESOURCEGROUPNAME }} -y --no-wait
+  #     - name: Delete Azure Resource Group
+  #       run: |
+  #         az group delete -n ${{ env.RESOURCEGROUPNAME }} -y --no-wait
