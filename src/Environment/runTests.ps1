@@ -16,6 +16,10 @@ $payload = @{
     maxMessageSize = $max
 }
 
+Write-Host "Enforcing capacity unit reset"
+
+az servicebus namespace update --name $serviceBusName --resource-group $resourceGroupName --capacity 1
+
 $response = Invoke-RestMethod -UseBasicParsing -Method Post -ContentType "application/json" -Body ($payload | ConvertTo-Json) -Uri $url
 
 Write-Host "Test Started:"
