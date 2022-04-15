@@ -37,7 +37,7 @@
             "properties": {
                 "name": "[parameters('planName')]",
                 "elasticScaleEnabled": true,
-                "maximumElasticWorkerCount": 200
+                "maximumElasticWorkerCount": 100
             }
         },
         {
