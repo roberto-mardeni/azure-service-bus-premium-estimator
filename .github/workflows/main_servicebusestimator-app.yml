@@ -69,7 +69,7 @@ jobs:
           format: 'YYYYMMDDHHmmss'
 
       - uses: azure/arm-deploy@v1
-        id: createAzureSharedResources
+        id: deployAzureResources
         with:
           subscriptionId: ${{ secrets.SUBSCRIPTIONID }}
           resourceGroupName: ${{ env.RESOURCEGROUPNAME }}
