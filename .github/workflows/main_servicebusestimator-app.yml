@@ -76,7 +76,7 @@ jobs:
 
       - name: 'Deploy Estimator'
         uses: Azure/functions-action@v1
-        id: fa
+        id: deploy-estimator
         with:
           app-name: 'servicebusestimator-app'
           slot-name: 'Production'
@@ -84,7 +84,7 @@ jobs:
 
       - name: 'Deploy Receiver'
         uses: Azure/functions-action@v1
-        id: fa
+        id: deploy-receiver
         with:
           app-name: 'servicebusestimatorreceiver-app'
           slot-name: 'Production'
