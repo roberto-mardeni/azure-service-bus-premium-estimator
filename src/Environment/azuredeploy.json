@@ -50,7 +50,7 @@
                         "value": "[variables('estimatorPlanName')]"
                     },
                     "receiverName": {
-                        "value": "[variables('receiverAppName')]"
+                        "value": "[variables('receiver1AppName')]"
                     }
                 }
             }
