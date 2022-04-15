@@ -177,7 +177,7 @@
                                     "timeWindow": "PT5M",
                                     "timeAggregation": "Count",
                                     "operator": "GreaterThan",
-                                    "threshold": 2,
+                                    "threshold": 5,
                                     "dimensions": [],
                                     "dividePerInstance": false
                                 },
@@ -185,7 +185,7 @@
                                     "direction": "Increase",
                                     "type": "ServiceAllowedNextValue",
                                     "value": "1",
-                                    "cooldown": "PT5M"
+                                    "cooldown": "PT1M"
                                 }
                             },
                             {
@@ -198,7 +198,7 @@
                                     "timeWindow": "PT5M",
                                     "timeAggregation": "Count",
                                     "operator": "LessThan",
-                                    "threshold": 2,
+                                    "threshold": 5,
                                     "dimensions": [],
                                     "dividePerInstance": false
                                 },
@@ -206,7 +206,7 @@
                                     "direction": "Decrease",
                                     "type": "ServiceAllowedNextValue",
                                     "value": "1",
-                                    "cooldown": "PT5M"
+                                    "cooldown": "PT1M"
                                 }
                             }
                         ]
