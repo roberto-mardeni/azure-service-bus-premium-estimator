@@ -29,7 +29,7 @@
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
-                    "uri": "azuredeploy-shared.json",
+                    "uri": "nested/azuredeploy-shared.json",
                     "contentVersion": "1.0.0.0"
                 },
                 "parameters": {
@@ -61,7 +61,7 @@
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
-                    "uri": "azuredeploy-estimator.json",
+                    "uri": "nested/azuredeploy-estimator.json",
                     "contentVersion": "1.0.0.0"
                 },
                 "parameters": {
@@ -94,7 +94,7 @@
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
-                    "uri": "azuredeploy-receiver.json",
+                    "uri": "nested/azuredeploy-receiver.json",
                     "contentVersion": "1.0.0.0"
                 },
                 "parameters": {
