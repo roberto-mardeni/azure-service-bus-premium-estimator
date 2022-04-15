@@ -27,17 +27,17 @@
             "name": "[parameters('planName')]",
             "location": "[resourceGroup().location]",
             "sku": {
-                "name": "EP2",
+                "name": "EP1",
                 "tier": "ElasticPremium",
-                "size": "EP2",
+                "size": "EP1",
                 "family": "EP",
-                "capacity": 1
+                "capacity": 10
             },
             "kind": "elastic",
             "properties": {
                 "name": "[parameters('planName')]",
                 "elasticScaleEnabled": true,
-                "maximumElasticWorkerCount": 100
+                "maximumElasticWorkerCount": 50
             }
         },
         {
