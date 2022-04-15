@@ -52,10 +52,13 @@ jobs:
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-      - name: Create Azure Resource Group
+      - name: Create Azure Resource Groups
         run: |
           if [ $(az group exists --name ${{ env.RESOURCEGROUPNAME }}) = false ]; then
             az group create -n ${{ env.RESOURCEGROUPNAME }} -l ${{ env.LOCATION }}
+          fi
+          if [ $(az group exists --name ${{ env.RESOURCEGROUPNAME }}Receiver) = false ]; then
+            az group create -n ${{ env.RESOURCEGROUPNAME }}Receiver -l ${{ env.LOCATION }}
           fi
 
       - name: Get Time
@@ -70,7 +73,7 @@ jobs:
         with:
           subscriptionId: ${{ secrets.SUBSCRIPTIONID }}
           resourceGroupName: ${{ env.RESOURCEGROUPNAME }}
-          template: ${{ env.ARM_TEMPLATES_PATH }}/azuredeploy.json
+          template: https://raw.githubusercontent.com/roberto-mardeni/azure-service-bus-premium-estimator/main/src/Environment/azuredeploy.json
           deploymentName: 'AzureDeploy-${{ steps.time.outputs.time }}'
           parameters: 
 
