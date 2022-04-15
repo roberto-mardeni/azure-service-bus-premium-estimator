@@ -93,6 +93,14 @@ jobs:
           slot-name: 'Production'
           package: '${{ env.RECEIVER_PACKAGE_PATH }}/output'
 
+      - name: 'Deploy Receiver'
+        uses: Azure/functions-action@v1
+        id: deploy-receiver2
+        with:
+          app-name: 'servicebusestimatorreceiver2'
+          slot-name: 'Production'
+          package: '${{ env.RECEIVER_PACKAGE_PATH }}/output'
+
   test:
     needs: build-and-deploy
     runs-on: windows-latest
