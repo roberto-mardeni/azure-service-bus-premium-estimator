@@ -19,18 +19,10 @@
     "extensions": {
         "serviceBus": {
             "clientRetryOptions":{
-                "mode": "exponential",
                 "tryTimeout": "00:10:00",
-                "delay": "00:00:00.80",
-                "maxDelay": "00:10:00",
                 "maxRetries": 5
             },
-            "prefetchCount": 0,
-            "autoCompleteMessages": true,
-            "maxConcurrentCalls": 16,
-            "maxConcurrentSessions": 8,
-            "maxAutoLockRenewalDuration": "01:00:00",
-            "sessionIdleTimeout": "01:00:00"
+            "autoCompleteMessages": true
         }
     }
 }
