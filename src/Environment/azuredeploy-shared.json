@@ -1,0 +1,263 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "prefix": {
+            "type": "string",
+            "defaultValue": "servicebusestimator"
+        },
+        "queueName": {
+            "type": "string",
+            "defaultValue": "myqueue"
+        },
+        "storageName": {
+            "type": "string",
+            "defaultValue": "[concat('estimator', uniqueString(resourceGroup().id))]"
+        },
+        "appName": {
+            "type": "string",
+            "defaultValue": "servicebusestimator-app"
+        },
+        "receiverName": {
+            "type": "string",
+            "defaultValue": "servicebusestimatorreceiver-app"
+        }
+    },
+    "variables": {
+        "serviceBusName": "[concat(parameters('prefix'),'-bus')]",
+        "serviceBusAutoScaleName": "[concat(parameters('prefix'),'-bus-autoscale')]",
+        "serviceBusKey": "EstimatorAccessKey",
+        "logAnalyticsName": "[concat(parameters('prefix'),'-law')]",
+        "appInsightsName": "[concat(parameters('prefix'),'-ai')]"
+    },
+    "functions": [],
+    "resources": [
+        {
+            "type": "Microsoft.ServiceBus/namespaces",
+            "apiVersion": "2021-11-01",
+            "name": "[variables('serviceBusName')]",
+            "location": "[resourceGroup().location]",
+            "sku": {
+                "name": "Premium",
+                "tier": "Premium",
+                "capacity": 1
+            },
+            "properties": {
+                "disableLocalAuth": false,
+                "zoneRedundant": true
+            }
+        },
+        {
+            "type": "Microsoft.ServiceBus/namespaces/AuthorizationRules",
+            "apiVersion": "2021-06-01-preview",
+            "name": "[concat(variables('serviceBusName'),'/',variables('serviceBusKey'))]",
+            "location": "[resourceGroup().location]",
+            "dependsOn": [
+                "[resourceId('Microsoft.ServiceBus/namespaces', variables('serviceBusName'))]"
+            ],
+            "properties": {
+                "rights": [
+                    "Listen",
+                    "Manage",
+                    "Send"
+                ]
+            }
+        },
+        {
+            "type": "Microsoft.ServiceBus/namespaces/networkRuleSets",
+            "apiVersion": "2021-06-01-preview",
+            "name": "[concat(variables('serviceBusName'), '/default')]",
+            "location": "[resourceGroup().location]",
+            "dependsOn": [
+                "[resourceId('Microsoft.ServiceBus/namespaces', variables('serviceBusName'))]"
+            ],
+            "properties": {
+                "publicNetworkAccess": "Enabled",
+                "defaultAction": "Allow",
+                "virtualNetworkRules": [],
+                "ipRules": []
+            }
+        },
+        {
+            "type": "Microsoft.ServiceBus/namespaces/queues",
+            "apiVersion": "2021-06-01-preview",
+            "name": "[concat(variables('serviceBusName'), '/', parameters('queueName'))]",
+            "location": "[resourceGroup().location]",
+            "dependsOn": [
+                "[resourceId('Microsoft.ServiceBus/namespaces', variables('serviceBusName'))]"
+            ],
+            "properties": {
+                "maxMessageSizeInKilobytes": 102400,
+                "lockDuration": "PT30S",
+                "maxSizeInMegabytes": 81920,
+                "requiresDuplicateDetection": false,
+                "requiresSession": false,
+                "defaultMessageTimeToLive": "P14D",
+                "deadLetteringOnMessageExpiration": false,
+                "enableBatchedOperations": true,
+                "duplicateDetectionHistoryTimeWindow": "PT10M",
+                "maxDeliveryCount": 10,
+                "status": "Active",
+                "autoDeleteOnIdle": "P10675199DT2H48M5.4775807S",
+                "enablePartitioning": false,
+                "enableExpress": false
+            }
+        },
+        {
+            "apiVersion": "2017-03-15-preview",
+            "name": "[variables('logAnalyticsName')]",
+            "location": "[resourceGroup().location]",
+            "type": "Microsoft.OperationalInsights/workspaces",
+            "properties": {
+                "sku": {
+                    "name": "pergb2018"
+                }
+            }
+        },
+        {
+            "type": "Microsoft.Storage/storageAccounts",
+            "apiVersion": "2021-08-01",
+            "name": "[parameters('storageName')]",
+            "location": "[resourceGroup().location]",
+            "sku": {
+                "name": "Standard_LRS",
+                "tier": "Standard"
+            },
+            "kind": "Storage",
+            "properties": {
+                "minimumTlsVersion": "TLS1_2",
+                "allowBlobPublicAccess": true,
+                "networkAcls": {
+                    "bypass": "AzureServices",
+                    "virtualNetworkRules": [],
+                    "ipRules": [],
+                    "defaultAction": "Allow"
+                },
+                "supportsHttpsTrafficOnly": true,
+                "encryption": {
+                    "services": {
+                        "file": {
+                            "keyType": "Account",
+                            "enabled": true
+                        },
+                        "blob": {
+                            "keyType": "Account",
+                            "enabled": true
+                        }
+                    },
+                    "keySource": "Microsoft.Storage"
+                }
+            }
+        },
+        {
+            "type": "microsoft.insights/autoscalesettings",
+            "apiVersion": "2021-05-01-preview",
+            "name": "[variables('serviceBusAutoScaleName')]",
+            "location": "[resourceGroup().location]",
+            "dependsOn": [
+                "[resourceId('Microsoft.ServiceBus/namespaces', variables('serviceBusName'))]"
+            ],
+            "properties": {
+                "profiles": [
+                    {
+                        "name": "Auto scale based on Throttled Requests",
+                        "capacity": {
+                            "minimum": "1",
+                            "maximum": "16",
+                            "default": "1"
+                        },
+                        "rules": [
+                            {
+                                "metricTrigger": {
+                                    "metricName": "ThrottledRequests",
+                                    "metricNamespace": "microsoft.servicebus/namespaces",
+                                    "metricResourceUri": "[resourceId('Microsoft.ServiceBus/namespaces', variables('serviceBusName'))]",
+                                    "timeGrain": "PT1M",
+                                    "statistic": "Sum",
+                                    "timeWindow": "PT5M",
+                                    "timeAggregation": "Count",
+                                    "operator": "GreaterThan",
+                                    "threshold": 2,
+                                    "dimensions": [],
+                                    "dividePerInstance": false
+                                },
+                                "scaleAction": {
+                                    "direction": "Increase",
+                                    "type": "ServiceAllowedNextValue",
+                                    "value": "1",
+                                    "cooldown": "PT5M"
+                                }
+                            },
+                            {
+                                "metricTrigger": {
+                                    "metricName": "ThrottledRequests",
+                                    "metricNamespace": "microsoft.servicebus/namespaces",
+                                    "metricResourceUri": "[resourceId('Microsoft.ServiceBus/namespaces', variables('serviceBusName'))]",
+                                    "timeGrain": "PT1M",
+                                    "statistic": "Sum",
+                                    "timeWindow": "PT5M",
+                                    "timeAggregation": "Count",
+                                    "operator": "LessThan",
+                                    "threshold": 2,
+                                    "dimensions": [],
+                                    "dividePerInstance": false
+                                },
+                                "scaleAction": {
+                                    "direction": "Decrease",
+                                    "type": "ServiceAllowedNextValue",
+                                    "value": "1",
+                                    "cooldown": "PT5M"
+                                }
+                            }
+                        ]
+                    }
+                ],
+                "enabled": true,
+                "name": "[variables('serviceBusAutoScaleName')]",
+                "targetResourceUri": "[resourceId('Microsoft.ServiceBus/namespaces', variables('serviceBusName'))]",
+                "notifications": [],
+                "predictiveAutoscalePolicy": {
+                    "scaleMode": "Disabled"
+                }
+            }
+        },
+        {
+            "name": "[variables('appInsightsName')]",
+            "type": "microsoft.insights/components",
+            "location": "[resourceGroup().location]",
+            "apiVersion": "2020-02-02",
+            "dependsOn": [
+                "[resourceId('Microsoft.OperationalInsights/workspaces',variables('logAnalyticsName'))]"
+            ],
+            "tags": {
+                "[concat('hidden-link:/subscriptions/',subscription().subscriptionId,'/resourceGroups/',resourceGroup().name,'/providers/Microsoft.Web/sites/',parameters('appName'))]": "Resource",
+                "[concat('hidden-link:/subscriptions/',subscription().subscriptionId,'/resourceGroups/',resourceGroup().name,'/providers/Microsoft.Web/sites/',parameters('receiverName'))]": "Resource"
+            },
+            "kind": "web",
+            "properties": {
+                "Application_Type": "web",
+                "Flow_Type": "Redfield",
+                "Request_Source": "IbizaAIExtension",
+                "RetentionInDays": 90,
+                "WorkspaceResourceId": "[resourceId('Microsoft.OperationalInsights/workspaces',variables('logAnalyticsName'))]",
+                "IngestionMode": "LogAnalytics",
+                "publicNetworkAccessForIngestion": "Enabled",
+                "publicNetworkAccessForQuery": "Enabled"
+            }
+        }
+    ],
+    "outputs": {
+        "storageConnectionString": {
+            "type": "string",
+            "value": "[concat('DefaultEndpointsProtocol=https;AccountName=', parameters('storageName'), ';AccountKey=', listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('storageName')), '2019-04-01').keys[0].value,';EndpointSuffix=core.windows.net')]"
+        },
+        "serviceBusConnectionString": {
+            "type": "string",
+            "value": "[concat(listKeys(resourceId('Microsoft.ServiceBus/namespaces/AuthorizationRules',variables('serviceBusName'),variables('serviceBusKey')),'2015-08-01').primaryConnectionString, ';OperationTimeout=00:10:00')]"
+        },
+        "appInsightsInstrumentationKey": {
+            "type": "string",
+            "value": "[reference(concat('microsoft.insights/components/', variables('appInsightsName'))).InstrumentationKey]"
+        }
+    }
+}
