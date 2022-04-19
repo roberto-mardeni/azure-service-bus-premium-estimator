@@ -27,18 +27,19 @@
             "name": "[parameters('planName')]",
             "location": "[resourceGroup().location]",
             "sku": {
-                "name": "EP1",
-                "tier": "ElasticPremium",
-                "size": "EP1",
-                "family": "EP",
-                "capacity": 10
+                "Tier": "ElasticPremium",
+                "Name": "EP1"
             },
-            "kind": "elastic",
             "properties": {
                 "name": "[parameters('planName')]",
-                "elasticScaleEnabled": true,
-                "maximumElasticWorkerCount": 50
-            }
+                "workerSize": "3",
+                "workerSizeId": "3",
+                "numberOfWorkers": "1",
+                "reserved": true,
+                "maximumElasticWorkerCount": 50,
+                "zoneRedundant": false
+            },
+            "kind": "linux"
         },
         {
             "type": "Microsoft.Web/sites",
