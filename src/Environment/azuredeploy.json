@@ -152,39 +152,6 @@
                     }
                 }
             }
-        },
-        {
-            "type": "Microsoft.Resources/deployments",
-            "apiVersion": "2021-04-01",
-            "name": "receiver3",
-            "resourceGroup": "[concat(parameters('prefix'),'Receiver')]",
-            "dependsOn": [
-                "[resourceId('Microsoft.Resources/deployments', 'shared')]"
-            ],
-            "properties": {
-                "mode": "Incremental",
-                "templateLink": {
-                    "relativePath": "nested/azuredeploy-receiver.json",
-                    "contentVersion": "1.0.0.0"
-                },
-                "parameters": {
-                    "planName": {
-                        "value": "[variables('receiver3PlanName')]"
-                    },
-                    "appName": {
-                        "value": "[variables('receiver3AppName')]"
-                    },
-                    "storageConnectionString": {
-                        "value": "[reference('shared').outputs.storageConnectionString.value]"
-                    },
-                    "serviceBusConnectionString": {
-                        "value": "[reference('shared').outputs.serviceBusConnectionString.value]"
-                    },
-                    "appInsightsInstrumentationKey": {
-                        "value": "[reference('shared').outputs.appInsightsInstrumentationKey.value]"
-                    }
-                }
-            }
         }
     ],
     "outputs": {}
