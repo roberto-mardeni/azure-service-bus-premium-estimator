@@ -177,7 +177,7 @@
                                     "timeWindow": "PT5M",
                                     "timeAggregation": "Maximum",
                                     "operator": "GreaterThan",
-                                    "threshold": 5,
+                                    "threshold": 10,
                                     "dimensions": [],
                                     "dividePerInstance": false
                                 },
@@ -185,7 +185,7 @@
                                     "direction": "Increase",
                                     "type": "ServiceAllowedNextValue",
                                     "value": "1",
-                                    "cooldown": "PT1M"
+                                    "cooldown": "PT5M"
                                 }
                             },
                             {
