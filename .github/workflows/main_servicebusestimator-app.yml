@@ -17,7 +17,7 @@ env:
   ESTIMATOR_PACKAGE_PATH: 'src/AzureServiceBusEstimator'
   RECEIVER_PACKAGE_PATH: 'src/AzureServiceBusReceiver'
   DOTNET_VERSION: '6.0.x'
-  NUMBER_OF_TESTS: 1000
+  NUMBER_OF_TESTS: 2000
   MIN_SIZE: 1
   MAX_SIZE: 20
 
