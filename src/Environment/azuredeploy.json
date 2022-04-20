@@ -29,7 +29,7 @@
         {
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2021-04-01",
-            "name": "[concat(deployment().name, '-shared')]",
+            "name": "shared",
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
@@ -61,9 +61,9 @@
         {
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2021-04-01",
-            "name": "[concat(deployment().name, '-estimator')]",
+            "name": "estimator",
             "dependsOn": [
-                "[resourceId('Microsoft.Resources/deployments', concat(deployment().name, '-shared'))]"
+                "[resourceId('Microsoft.Resources/deployments', 'shared')]"
             ],
             "properties": {
                 "mode": "Incremental",
@@ -79,13 +79,13 @@
                         "value": "[variables('estimatorAppName')]"
                     },
                     "storageConnectionString": {
-                        "value": "[reference(concat(deployment().name, '-shared')).outputs.storageConnectionString.value]"
+                        "value": "[reference('shared').outputs.storageConnectionString.value]"
                     },
                     "serviceBusConnectionString": {
-                        "value": "[reference(concat(deployment().name, '-shared')).outputs.serviceBusConnectionString.value]"
+                        "value": "[reference('shared').outputs.serviceBusConnectionString.value]"
                     },
                     "appInsightsInstrumentationKey": {
-                        "value": "[reference(concat(deployment().name, '-shared')).outputs.appInsightsInstrumentationKey.value]"
+                        "value": "[reference('shared').outputs.appInsightsInstrumentationKey.value]"
                     }
                 }
             }
@@ -93,14 +93,14 @@
         {
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2021-04-01",
-            "name": "[concat(deployment().name, '-receiver-', copyIndex(1))]",
+            "name": "[concat('receiver-', copyIndex(1))]",
             "resourceGroup": "[concat(parameters('prefix'),'Receiver')]",
             "copy": {
                 "name": "receivercopy",
                 "count": "[parameters('numberOfReceivers')]"
             },
             "dependsOn": [
-                "[resourceId('Microsoft.Resources/deployments', concat(deployment().name, '-estimator'))]"
+                "[resourceId('Microsoft.Resources/deployments', 'shared')]"
             ],
             "properties": {
                 "mode": "Incremental",
@@ -116,13 +116,13 @@
                         "value": "[concat(variables('receiverAppNamePrefix'), '-', copyIndex(1))]"
                     },
                     "storageConnectionString": {
-                        "value": "[reference(concat(deployment().name, '-shared')).outputs.storageConnectionString.value]"
+                        "value": "[reference('shared').outputs.storageConnectionString.value]"
                     },
                     "serviceBusConnectionString": {
-                        "value": "[reference(concat(deployment().name, '-shared')).outputs.serviceBusConnectionString.value]"
+                        "value": "[reference('shared').outputs.serviceBusConnectionString.value]"
                     },
                     "appInsightsInstrumentationKey": {
-                        "value": "[reference(concat(deployment().name, '-shared')).outputs.appInsightsInstrumentationKey.value]"
+                        "value": "[reference('shared').outputs.appInsightsInstrumentationKey.value]"
                     }
                 }
             }
