@@ -63,7 +63,7 @@
             "apiVersion": "2021-04-01",
             "name": "[concat(deployment().name, '-estimator')]",
             "dependsOn": [
-                "[resourceId('Microsoft.Resources/deployments', 'shared')]"
+                "[resourceId('Microsoft.Resources/deployments', concat(deployment().name, '-shared'))]"
             ],
             "properties": {
                 "mode": "Incremental",
@@ -100,7 +100,7 @@
                 "count": "[parameters('numberOfReceivers')]"
             },
             "dependsOn": [
-                "[resourceId('Microsoft.Resources/deployments', 'shared')]"
+                "[resourceId('Microsoft.Resources/deployments', concat(deployment().name, '-estimator'))]"
             ],
             "properties": {
                 "mode": "Incremental",
