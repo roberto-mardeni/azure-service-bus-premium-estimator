@@ -18,9 +18,13 @@
             "type": "string",
             "defaultValue": "servicebusestimator-app"
         },
-        "receiverName": {
+        "receiverNamePrefix": {
             "type": "string",
             "defaultValue": "servicebusestimatorreceiver-app"
+        },
+        "numberOfReceivers": {
+            "type": "int",
+            "defaultValue": 2
         }
     },
     "variables": {
@@ -231,7 +235,8 @@
             ],
             "tags": {
                 "[concat('hidden-link:/subscriptions/',subscription().subscriptionId,'/resourceGroups/',resourceGroup().name,'/providers/Microsoft.Web/sites/',parameters('appName'))]": "Resource",
-                "[concat('hidden-link:/subscriptions/',subscription().subscriptionId,'/resourceGroups/',resourceGroup().name,'/providers/Microsoft.Web/sites/',parameters('receiverName'))]": "Resource"
+                "[concat('hidden-link:/subscriptions/',subscription().subscriptionId,'/resourceGroups/',resourceGroup().name,'/providers/Microsoft.Web/sites/',parameters('receiverNamePrefix'),'1')]": "Resource",
+                "[concat('hidden-link:/subscriptions/',subscription().subscriptionId,'/resourceGroups/',resourceGroup().name,'/providers/Microsoft.Web/sites/',parameters('receiverNamePrefix'),'2')]": "Resource"
             },
             "kind": "web",
             "properties": {

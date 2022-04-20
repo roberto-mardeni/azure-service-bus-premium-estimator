@@ -13,17 +13,17 @@
         "storageName": {
             "type": "string",
             "defaultValue": "[concat('estimator', uniqueString(resourceGroup().id))]"
+        },
+        "numberOfReceivers": {
+            "type": "int",
+            "defaultValue": 2
         }
     },
     "variables": {
         "estimatorPlanName": "[concat(parameters('prefix'),'-plan')]",
         "estimatorAppName": "[concat(parameters('prefix'),'-app')]",
-        "receiver1PlanName": "[concat(parameters('prefix'),'receiver1-plan')]",
-        "receiver1AppName": "[concat(parameters('prefix'),'receiver1-app')]",
-        "receiver2PlanName": "[concat(parameters('prefix'),'receiver2-plan')]",
-        "receiver2AppName": "[concat(parameters('prefix'),'receiver2-app')]",
-        "receiver3PlanName": "[concat(parameters('prefix'),'receiver3-plan')]",
-        "receiver3AppName": "[concat(parameters('prefix'),'receiver3-app')]"
+        "receiverPlanNamePrefix": "[concat(parameters('prefix'),'receiver-plan')]",
+        "receiverAppNamePrefix": "[concat(parameters('prefix'),'receiver-app')]"
     },
     "resources": [
         {
@@ -49,8 +49,11 @@
                     "appName": {
                         "value": "[variables('estimatorPlanName')]"
                     },
-                    "receiverName": {
-                        "value": "[variables('receiver1AppName')]"
+                    "receiverNamePrefix": {
+                        "value": "[variables('receiverAppNamePrefix')]"
+                    },
+                    "numberOfReceivers": {
+                        "value": "[parameters('numberOfReceivers')]"
                     }
                 }
             }
@@ -90,8 +93,12 @@
         {
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2021-04-01",
-            "name": "receiver1",
+            "name": "[concat('receiver', copyIndex())]",
             "resourceGroup": "[concat(parameters('prefix'),'Receiver')]",
+            "copy": {
+                "name": "receivercopy",
+                "count": "[parameters('numberOfReceivers')]"
+            },
             "dependsOn": [
                 "[resourceId('Microsoft.Resources/deployments', 'shared')]"
             ],
@@ -103,43 +110,10 @@
                 },
                 "parameters": {
                     "planName": {
-                        "value": "[variables('receiver1PlanName')]"
+                        "value": "[concat(variables('receiverPlanNamePrefix'), copyIndex())]"
                     },
                     "appName": {
-                        "value": "[variables('receiver1AppName')]"
-                    },
-                    "storageConnectionString": {
-                        "value": "[reference('shared').outputs.storageConnectionString.value]"
-                    },
-                    "serviceBusConnectionString": {
-                        "value": "[reference('shared').outputs.serviceBusConnectionString.value]"
-                    },
-                    "appInsightsInstrumentationKey": {
-                        "value": "[reference('shared').outputs.appInsightsInstrumentationKey.value]"
-                    }
-                }
-            }
-        },
-        {
-            "type": "Microsoft.Resources/deployments",
-            "apiVersion": "2021-04-01",
-            "name": "receiver2",
-            "resourceGroup": "[concat(parameters('prefix'),'Receiver')]",
-            "dependsOn": [
-                "[resourceId('Microsoft.Resources/deployments', 'shared')]"
-            ],
-            "properties": {
-                "mode": "Incremental",
-                "templateLink": {
-                    "relativePath": "nested/azuredeploy-receiver.json",
-                    "contentVersion": "1.0.0.0"
-                },
-                "parameters": {
-                    "planName": {
-                        "value": "[variables('receiver2PlanName')]"
-                    },
-                    "appName": {
-                        "value": "[variables('receiver2AppName')]"
+                        "value": "[concat(variables('receiverAppNamePrefix'), copyIndex())]"
                     },
                     "storageConnectionString": {
                         "value": "[reference('shared').outputs.storageConnectionString.value]"
