@@ -79,13 +79,13 @@
                         "value": "[variables('estimatorAppName')]"
                     },
                     "storageConnectionString": {
-                        "value": "[reference('shared').outputs.storageConnectionString.value]"
+                        "value": "[reference(concat(deployment().name, '-shared')).outputs.storageConnectionString.value]"
                     },
                     "serviceBusConnectionString": {
-                        "value": "[reference('shared').outputs.serviceBusConnectionString.value]"
+                        "value": "[reference(concat(deployment().name, '-shared')).outputs.serviceBusConnectionString.value]"
                     },
                     "appInsightsInstrumentationKey": {
-                        "value": "[reference('shared').outputs.appInsightsInstrumentationKey.value]"
+                        "value": "[reference(concat(deployment().name, '-shared')).outputs.appInsightsInstrumentationKey.value]"
                     }
                 }
             }
@@ -116,13 +116,13 @@
                         "value": "[concat(variables('receiverAppNamePrefix'), '-', copyIndex(1))]"
                     },
                     "storageConnectionString": {
-                        "value": "[reference('shared').outputs.storageConnectionString.value]"
+                        "value": "[reference(concat(deployment().name, '-shared')).outputs.storageConnectionString.value]"
                     },
                     "serviceBusConnectionString": {
-                        "value": "[reference('shared').outputs.serviceBusConnectionString.value]"
+                        "value": "[reference(concat(deployment().name, '-shared')).outputs.serviceBusConnectionString.value]"
                     },
                     "appInsightsInstrumentationKey": {
-                        "value": "[reference('shared').outputs.appInsightsInstrumentationKey.value]"
+                        "value": "[reference(concat(deployment().name, '-shared')).outputs.appInsightsInstrumentationKey.value]"
                     }
                 }
             }
