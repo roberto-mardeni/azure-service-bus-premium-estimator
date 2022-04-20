@@ -89,7 +89,7 @@ jobs:
         uses: Azure/functions-action@v1
         id: deploy-receiver
         with:
-          app-name: 'servicebusestimatorreceiver1-app'
+          app-name: 'servicebusestimatorreceiver-app-1'
           slot-name: 'Production'
           package: '${{ env.RECEIVER_PACKAGE_PATH }}/output'
 
@@ -97,7 +97,7 @@ jobs:
         uses: Azure/functions-action@v1
         id: deploy-receiver2
         with:
-          app-name: 'servicebusestimatorreceiver2-app'
+          app-name: 'servicebusestimatorreceiver-app-2'
           slot-name: 'Production'
           package: '${{ env.RECEIVER_PACKAGE_PATH }}/output'
 
