@@ -48,12 +48,6 @@
                     },
                     "appName": {
                         "value": "[variables('estimatorPlanName')]"
-                    },
-                    "receiverNamePrefix": {
-                        "value": "[variables('receiverAppNamePrefix')]"
-                    },
-                    "numberOfReceivers": {
-                        "value": "[parameters('numberOfReceivers')]"
                     }
                 }
             }

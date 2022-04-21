@@ -17,14 +17,6 @@
         "appName": {
             "type": "string",
             "defaultValue": "servicebusestimator-app"
-        },
-        "receiverNamePrefix": {
-            "type": "string",
-            "defaultValue": "servicebusestimatorreceiver-app"
-        },
-        "numberOfReceivers": {
-            "type": "int",
-            "defaultValue": 2
         }
     },
     "variables": {
@@ -234,9 +226,7 @@
                 "[resourceId('Microsoft.OperationalInsights/workspaces',variables('logAnalyticsName'))]"
             ],
             "tags": {
-                "[concat('hidden-link:/subscriptions/',subscription().subscriptionId,'/resourceGroups/',resourceGroup().name,'/providers/Microsoft.Web/sites/',parameters('appName'))]": "Resource",
-                "[concat('hidden-link:/subscriptions/',subscription().subscriptionId,'/resourceGroups/',resourceGroup().name,'/providers/Microsoft.Web/sites/',parameters('receiverNamePrefix'),'-1')]": "Resource",
-                "[concat('hidden-link:/subscriptions/',subscription().subscriptionId,'/resourceGroups/',resourceGroup().name,'/providers/Microsoft.Web/sites/',parameters('receiverNamePrefix'),'-2')]": "Resource"
+                "[concat('hidden-link:/subscriptions/',subscription().subscriptionId,'/resourceGroups/',resourceGroup().name,'/providers/Microsoft.Web/sites/',parameters('appName'))]": "Resource"
             },
             "kind": "web",
             "properties": {
