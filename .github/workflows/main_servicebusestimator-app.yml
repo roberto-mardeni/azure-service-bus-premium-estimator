@@ -20,6 +20,7 @@ env:
   NUMBER_OF_TESTS: 2000
   MIN_SIZE: 1
   MAX_SIZE: 20
+  NUMBER_OF_RECEIVERS: 2
 
 jobs:
   build-and-deploy:
@@ -75,7 +76,7 @@ jobs:
           resourceGroupName: ${{ env.RESOURCEGROUPNAME }}
           template: https://raw.githubusercontent.com/roberto-mardeni/azure-service-bus-premium-estimator/main/src/Environment/azuredeploy.json
           deploymentName: 'AzureDeploy-${{ steps.time.outputs.time }}'
-          parameters: 
+          parameters: numberOfReceivers=${{ env.NUMBER_OF_RECEIVERS }}
 
       - name: 'Deploy Estimator'
         uses: Azure/functions-action@v1
