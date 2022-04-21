@@ -182,5 +182,5 @@ jobs:
 
       - name: Delete Azure Resource Group
         run: |
-          az group delete -n ${{ env.RESOURCEGROUPNAME }} -y --no-wait
-          az group delete -n ${{ env.RESOURCEGROUPNAME_RECEIVERS }} -y --no-wait
+          az group delete -n ${{ env.RESOURCEGROUPNAME }} -y
+          az group delete -n ${{ env.RESOURCEGROUPNAME_RECEIVERS }} -y
