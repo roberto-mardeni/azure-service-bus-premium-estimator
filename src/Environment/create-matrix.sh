@@ -3,6 +3,6 @@
 declare -a matrix
 for i in {1..$1}
 do
-    matrix+=(i)
+    matrix+=(si)
 done
 echo $(echo ${matrix[@]} | tr ' ' ,)
