@@ -95,13 +95,9 @@ jobs:
       - name: Prepare Receivers Matrix
         id: set-matrix
         run: |
-          declare -a matrix
-          for i in {1..${{ env.NUMBER_OF_RECEIVERS }} }
-          do
-            matrix+=(i)
-          done
-          matrix_json=$(echo ${matrix[@]} | tr ' ' ,)
-          echo "::set-output name=matrix::[$matrix_json]"
+          matrix_list=$(src/Environment/create-matrix.sh ${{env.NUMBER_OF_RECEIVERS}})
+          echo "Matrix List: $matrix_list"
+          echo "::set-output name=matrix::[$matrix_list]"
 
     outputs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}
