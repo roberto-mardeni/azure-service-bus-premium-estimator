@@ -24,7 +24,7 @@ env:
   NUMBER_OF_RECEIVERS: 2
 
 jobs:
-  build-and-deploy:
+  build:
     runs-on: ubuntu-latest
     steps:
       - name: 'Checkout GitHub Action'
@@ -90,7 +90,7 @@ jobs:
           path: '${{ env.RECEIVER_PACKAGE_PATH }}/output'
 
   deploy-estimator:
-    needs: build-and-deploy
+    needs: build
     runs-on: ubuntu-latest
     steps:
       - name: Azure authentication
@@ -112,7 +112,7 @@ jobs:
           package: estimator
 
   deploy-receiver-1:
-    needs: build-and-deploy
+    needs: build
     runs-on: ubuntu-latest
     steps:
       - name: Azure authentication
@@ -133,7 +133,7 @@ jobs:
           package: receiver
 
   deploy-receiver-2:
-    needs: build-and-deploy
+    needs: build
     runs-on: ubuntu-latest
     steps:
       - name: Azure authentication
