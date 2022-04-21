@@ -111,9 +111,12 @@ jobs:
           slot-name: 'Production'
           package: estimator
 
-  deploy-receiver-1:
+  deploy-receivers:
     needs: build
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        number: [ 1, 2 ]
     steps:
       - name: Azure authentication
         uses: azure/login@v1
@@ -125,36 +128,15 @@ jobs:
           name: receiver
           path: receiver
 
-      - name: 'Deploy Receiver 1'
+      - name: 'Deploy Receiver ${{ matrix.number }}'
         uses: Azure/functions-action@v1
         with:
-          app-name: 'servicebusestimatorreceiver-app-1'
-          slot-name: 'Production'
-          package: receiver
-
-  deploy-receiver-2:
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-      - name: Azure authentication
-        uses: azure/login@v1
-        with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
-
-      - uses: actions/download-artifact@v3
-        with:
-          name: receiver
-          path: receiver
-
-      - name: 'Deploy Receiver 2'
-        uses: Azure/functions-action@v1
-        with:
-          app-name: 'servicebusestimatorreceiver-app-2'
+          app-name: 'servicebusestimatorreceiver-app-${{ matrix.number }}'
           slot-name: 'Production'
           package: receiver
 
   test:
-    needs: [ deploy-estimator, deploy-receiver-1, deploy-receiver-2 ]
+    needs: [ deploy-estimator, deploy-receivers ]
     runs-on: windows-latest
     steps:
       - name: 'Checkout GitHub Action'
