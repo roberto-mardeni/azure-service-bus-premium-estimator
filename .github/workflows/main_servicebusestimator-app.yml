@@ -90,7 +90,8 @@ jobs:
           path: '${{ env.RECEIVER_PACKAGE_PATH }}/output'
 
       - id: set-matrix
-        run: echo "::set-output name=matrix::'[1,2]'"
+        run: |
+          echo "::set-output name=matrix::'[1,2]'"
 
     outputs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}
