@@ -91,7 +91,12 @@ jobs:
 
       - id: set-matrix
         run: |
-          echo "::set-output name=matrix::'[1,2]'"
+          declare -a matrix
+          for i in {1..${{ env.NUMBER_OF_RECEIVERS }} }
+          do
+            matrix+=(i)
+          done
+          echo "::set-output name=matrix::[1,2]"
 
     outputs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}
