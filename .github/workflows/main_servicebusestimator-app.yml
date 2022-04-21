@@ -79,32 +79,82 @@ jobs:
           deploymentName: 'AzureDeploy-${{ steps.time.outputs.time }}'
           parameters: receiversResourceGroup=${{ env.RESOURCEGROUPNAME_RECEIVERS }} numberOfReceivers=${{ env.NUMBER_OF_RECEIVERS }}
 
+      - uses: actions/upload-artifact@v3
+        with:
+          name: estimator
+          path: '${{ env.ESTIMATOR_PACKAGE_PATH }}/output'
+
+      - uses: actions/upload-artifact@v3
+        with:
+          name: receiver
+          path: '${{ env.RECEIVER_PACKAGE_PATH }}/output'
+
+  deploy-estimator:
+    needs: build-and-deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: Azure authentication
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - uses: actions/download-artifact@v3
+        with:
+          name: estimator
+          path: estimator
+
       - name: 'Deploy Estimator'
         uses: Azure/functions-action@v1
         id: deploy-estimator
         with:
           app-name: 'servicebusestimator-app'
           slot-name: 'Production'
-          package: '${{ env.ESTIMATOR_PACKAGE_PATH }}/output'
+          package: estimator
+
+  deploy-receiver-1:
+    needs: build-and-deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: Azure authentication
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - uses: actions/download-artifact@v3
+        with:
+          name: receiver
+          path: receiver
 
       - name: 'Deploy Receiver 1'
         uses: Azure/functions-action@v1
-        id: deploy-receiver
         with:
           app-name: 'servicebusestimatorreceiver-app-1'
           slot-name: 'Production'
-          package: '${{ env.RECEIVER_PACKAGE_PATH }}/output'
+          package: receiver
+
+  deploy-receiver-2:
+    needs: build-and-deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: Azure authentication
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - uses: actions/download-artifact@v3
+        with:
+          name: receiver
+          path: receiver
 
       - name: 'Deploy Receiver 2'
         uses: Azure/functions-action@v1
-        id: deploy-receiver2
         with:
           app-name: 'servicebusestimatorreceiver-app-2'
           slot-name: 'Production'
-          package: '${{ env.RECEIVER_PACKAGE_PATH }}/output'
+          package: receiver
 
   test:
-    needs: build-and-deploy
+    needs: [ deploy-estimator, deploy-receiver-1, deploy-receiver-2 ]
     runs-on: windows-latest
     steps:
       - name: 'Checkout GitHub Action'
