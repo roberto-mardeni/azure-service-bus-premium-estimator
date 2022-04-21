@@ -100,7 +100,8 @@ jobs:
           do
             matrix+=(i)
           done
-          echo "::set-output name=matrix::[$(echo ${matrix[@]} | tr ' ' ,)]"
+          matrix_json=$(echo ${matrix[@]} | tr ' ' ,)
+          echo "::set-output name=matrix::[$matrix_json]"
 
     outputs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}
