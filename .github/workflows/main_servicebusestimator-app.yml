@@ -89,6 +89,12 @@ jobs:
           name: receiver
           path: '${{ env.RECEIVER_PACKAGE_PATH }}/output'
 
+      - id: set-matrix
+        run: echo "::set-output name=matrix::'[1,2]'"
+
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+
   deploy-estimator:
     needs: build
     runs-on: ubuntu-latest
@@ -116,7 +122,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        number: [ 1, 2 ]
+        number: ${{ fromJson(needs.build.outputs.matrix) }}
     steps:
       - name: Azure authentication
         uses: azure/login@v1
