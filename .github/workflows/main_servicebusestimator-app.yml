@@ -27,7 +27,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: 'Checkout GitHub Action'
+      - name: Checkout GitHub Action
         uses: actions/checkout@v2
 
       - name: Setup DotNet ${{ env.DOTNET_VERSION }} Environment
@@ -35,14 +35,14 @@ jobs:
         with:
           dotnet-version: ${{ env.DOTNET_VERSION }}
 
-      - name: 'Build Estimator'
+      - name: Build Estimator
         shell: bash
         run: |
           pushd './${{ env.ESTIMATOR_PACKAGE_PATH }}'
           dotnet build --configuration Release --output ./output
           popd
 
-      - name: 'Build Receiver'
+      - name: Build Receiver
         shell: bash
         run: |
           pushd './${{ env.RECEIVER_PACKAGE_PATH }}'
@@ -70,7 +70,8 @@ jobs:
           timeZone: 8
           format: 'YYYYMMDDHHmmss'
 
-      - uses: azure/arm-deploy@v1
+      - name: Deploy Azure resources
+        uses: azure/arm-deploy@v1
         id: deployAzureResources
         with:
           subscriptionId: ${{ secrets.SUBSCRIPTIONID }}
@@ -79,17 +80,20 @@ jobs:
           deploymentName: 'AzureDeploy-${{ steps.time.outputs.time }}'
           parameters: receiversResourceGroup=${{ env.RESOURCEGROUPNAME_RECEIVERS }} numberOfReceivers=${{ env.NUMBER_OF_RECEIVERS }}
 
-      - uses: actions/upload-artifact@v3
+      - name: Upload estimator artifact
+        uses: actions/upload-artifact@v3
         with:
           name: estimator
           path: '${{ env.ESTIMATOR_PACKAGE_PATH }}/output'
 
-      - uses: actions/upload-artifact@v3
+      - name: Upload receiver artifact
+        uses: actions/upload-artifact@v3
         with:
           name: receiver
           path: '${{ env.RECEIVER_PACKAGE_PATH }}/output'
 
-      - id: set-matrix
+      - name: Prepare Receivers Matrix
+        id: set-matrix
         run: |
           declare -a matrix
           for i in {1..${{ env.NUMBER_OF_RECEIVERS }} }
@@ -110,12 +114,13 @@ jobs:
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-      - uses: actions/download-artifact@v3
+      - name: Download artifact
+        uses: actions/download-artifact@v3
         with:
           name: estimator
           path: estimator
 
-      - name: 'Deploy Estimator'
+      - name: Deploy app
         uses: Azure/functions-action@v1
         id: deploy-estimator
         with:
@@ -135,12 +140,13 @@ jobs:
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-      - uses: actions/download-artifact@v3
+      - name: Download artifact
+        uses: actions/download-artifact@v3
         with:
           name: receiver
           path: receiver
 
-      - name: 'Deploy Receiver ${{ matrix.number }}'
+      - name: Deploy app
         uses: Azure/functions-action@v1
         with:
           app-name: 'servicebusestimatorreceiver-app-${{ matrix.number }}'
@@ -151,7 +157,7 @@ jobs:
     needs: [ deploy-estimator, deploy-receivers ]
     runs-on: windows-latest
     steps:
-      - name: 'Checkout GitHub Action'
+      - name: Checkout GitHub Action
         uses: actions/checkout@v2
 
       - name: Azure authentication
@@ -159,7 +165,7 @@ jobs:
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-      - name: 'Execute Stress Test'
+      - name: Execute Stress Test
         shell: pwsh
         run: |
           .\src\Environment\runTests.ps1 -url https://servicebusestimator-app.azurewebsites.net/api/orchestrators/startStressTests -tests ${{ env.NUMBER_OF_TESTS }} -min ${{ env.MIN_SIZE }} -max ${{ env.MAX_SIZE }} -resourceGroupName ${{ env.RESOURCEGROUPNAME }} -serviceBusName ${{ env.SERVICEBUSNAME }}
@@ -174,7 +180,7 @@ jobs:
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-      - name: Delete Azure Resource Group
+      - name: Delete Azure Resource Groups
         run: |
           az group delete -n ${{ env.RESOURCEGROUPNAME }} -y
           az group delete -n ${{ env.RESOURCEGROUPNAME_RECEIVERS }} -y
