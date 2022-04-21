@@ -17,6 +17,10 @@
         "numberOfReceivers": {
             "type": "int",
             "defaultValue": 2
+        },
+        "receiversResourceGroup": {
+            "type": "string",
+            "defaultValue": "ServiceBusEstimatorReceivers"
         }
     },
     "variables": {
@@ -88,7 +92,7 @@
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2021-04-01",
             "name": "[concat('receiver-', copyIndex(1))]",
-            "resourceGroup": "[concat(parameters('prefix'),'Receiver')]",
+            "resourceGroup": "[parameters('receiversResourceGroup')]",
             "copy": {
                 "name": "receivercopy",
                 "count": "[parameters('numberOfReceivers')]"

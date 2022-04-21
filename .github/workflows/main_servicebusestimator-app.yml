@@ -11,6 +11,7 @@ on:
 
 env:
   RESOURCEGROUPNAME: 'ServiceBusEstimator'
+  RESOURCEGROUPNAME_RECEIVERS: 'ServiceBusEstimatorReceivers'
   SERVICEBUSNAME: 'servicebusestimator-bus'
   LOCATION: 'eastus'
   ARM_TEMPLATES_PATH: 'src/Environment'
@@ -58,8 +59,8 @@ jobs:
           if [ $(az group exists --name ${{ env.RESOURCEGROUPNAME }}) = false ]; then
             az group create -n ${{ env.RESOURCEGROUPNAME }} -l ${{ env.LOCATION }}
           fi
-          if [ $(az group exists --name ${{ env.RESOURCEGROUPNAME }}Receiver) = false ]; then
-            az group create -n ${{ env.RESOURCEGROUPNAME }}Receiver -l ${{ env.LOCATION }}
+          if [ $(az group exists --name ${{ env.RESOURCEGROUPNAME_RECEIVERS }}) = false ]; then
+            az group create -n ${{ env.RESOURCEGROUPNAME_RECEIVERS }} -l ${{ env.LOCATION }}
           fi
 
       - name: Get Time
@@ -76,7 +77,7 @@ jobs:
           resourceGroupName: ${{ env.RESOURCEGROUPNAME }}
           template: https://raw.githubusercontent.com/roberto-mardeni/azure-service-bus-premium-estimator/main/src/Environment/azuredeploy.json
           deploymentName: 'AzureDeploy-${{ steps.time.outputs.time }}'
-          parameters: numberOfReceivers=${{ env.NUMBER_OF_RECEIVERS }}
+          parameters: receiversResourceGroup=${{ env.RESOURCEGROUPNAME_RECEIVERS }} numberOfReceivers=${{ env.NUMBER_OF_RECEIVERS }}
 
       - name: 'Deploy Estimator'
         uses: Azure/functions-action@v1
