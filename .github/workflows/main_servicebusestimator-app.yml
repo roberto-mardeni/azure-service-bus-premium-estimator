@@ -150,6 +150,10 @@ jobs:
           slot-name: 'Production'
           package: receiver
 
+      - name: Restart app
+        run: |
+          az functionapp restart --name 'servicebusestimatorreceiver-app-${{ matrix.number }}' --resource-group ${{ env.RESOURCEGROUPNAME_RECEIVERS }}
+
   test:
     needs: [ deploy-estimator, deploy-receivers ]
     runs-on: windows-latest
