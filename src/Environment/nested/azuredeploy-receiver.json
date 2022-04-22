@@ -34,7 +34,7 @@
                 "name": "[parameters('planName')]",
                 "workerSize": "3",
                 "workerSizeId": "3",
-                "numberOfWorkers": "1",
+                "numberOfWorkers": "2",
                 "reserved": true,
                 "maximumElasticWorkerCount": 50,
                 "zoneRedundant": false
