@@ -95,7 +95,7 @@ jobs:
           resourceGroupName: ${{ env.RESOURCEGROUPNAME }}
           template: https://raw.githubusercontent.com/roberto-mardeni/azure-service-bus-premium-estimator/main/src/Environment/azuredeploy.json
           deploymentName: 'AzureDeploy-${{ steps.time.outputs.time }}'
-          parameters: receiversResourceGroup=${{ env.RESOURCEGROUPNAME_RECEIVERS }} numberOfReceivers=${{ inputs.receivers }}
+          parameters: receiversResourceGroup=${{ env.RESOURCEGROUPNAME_RECEIVERS }} numberOfReceivers=${{ github.event.inputs.receivers }}
 
       - name: Upload estimator artifact
         uses: actions/upload-artifact@v3
@@ -112,7 +112,7 @@ jobs:
       - name: Prepare Receivers Matrix
         id: set-matrix
         run: |
-          matrix_list=$(src/Environment/create-matrix.sh ${{env.NUMBER_OF_RECEIVERS}})
+          matrix_list=$(src/Environment/create-matrix.sh ${{ github.event.inputs.receivers }})
           echo "Matrix List: $matrix_list"
           echo "::set-output name=matrix::[$matrix_list]"
 
@@ -182,7 +182,7 @@ jobs:
       - name: Execute Stress Test
         shell: pwsh
         run: |
-          .\src\Environment\runTests.ps1 -url https://servicebusestimator-app.azurewebsites.net/api/orchestrators/startStressTests -tests ${{ inputs.tests }} -min ${{ inputs.min }} -max ${{ inputs.max }} -resourceGroupName ${{ env.RESOURCEGROUPNAME }} -serviceBusName ${{ env.SERVICEBUSNAME }}
+          .\src\Environment\runTests.ps1 -url https://servicebusestimator-app.azurewebsites.net/api/orchestrators/startStressTests -tests ${{ github.event.inputs.tests }} -min ${{ github.event.inputs.min }} -max ${{ github.event.inputs.max }} -resourceGroupName ${{ env.RESOURCEGROUPNAME }} -serviceBusName ${{ env.SERVICEBUSNAME }}
 
   cleanup:
     needs: test
