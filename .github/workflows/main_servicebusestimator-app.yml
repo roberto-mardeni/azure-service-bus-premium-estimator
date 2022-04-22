@@ -8,6 +8,27 @@ on:
     branches:
       - main
   workflow_dispatch:
+    inputs:
+      tests:
+        description: 'Number of tests'
+        default: '2000'
+        type: number
+        required: true
+      min:
+        description: 'Minimum message size'
+        default: '1'
+        type: number
+        required: true
+      max:
+        description: 'Maximum message size'
+        default: '20'
+        type: number
+        required: true
+      receivers:
+        description: 'Number of receivers'
+        default: '2'
+        type: number
+        required: true
 
 env:
   RESOURCEGROUPNAME: 'ServiceBusEstimator'
