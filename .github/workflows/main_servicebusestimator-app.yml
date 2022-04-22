@@ -78,7 +78,7 @@ jobs:
           resourceGroupName: ${{ env.RESOURCEGROUPNAME }}
           template: https://raw.githubusercontent.com/roberto-mardeni/azure-service-bus-premium-estimator/main/src/Environment/azuredeploy.json
           deploymentName: 'AzureDeploy-${{ steps.time.outputs.time }}'
-          parameters: prefix=${{ env.PREFIX }}${{ env.GITHUB_RUN_ID }} receiversResourceGroup=${{ env.RESOURCEGROUPNAME_RECEIVERS }} numberOfReceivers=${{ env.NUMBER_OF_RECEIVERS }}
+          parameters: prefix=${{ env.PREFIX }} receiversResourceGroup=${{ env.RESOURCEGROUPNAME_RECEIVERS }} numberOfReceivers=${{ env.NUMBER_OF_RECEIVERS }}
 
       - name: Upload estimator artifact
         uses: actions/upload-artifact@v3
@@ -121,7 +121,7 @@ jobs:
         uses: Azure/functions-action@v1
         id: deploy-estimator
         with:
-          app-name: '${{ env.PREFIX }}${{ env.GITHUB_RUN_ID }}-app'
+          app-name: '${{ env.PREFIX }}-app'
           slot-name: 'Production'
           package: estimator
 
@@ -146,13 +146,13 @@ jobs:
       - name: Deploy app
         uses: Azure/functions-action@v1
         with:
-          app-name: '${{ env.PREFIX }}${{ env.GITHUB_RUN_ID }}receiver-app-${{ matrix.number }}'
+          app-name: '${{ env.PREFIX }}receiver-app-${{ matrix.number }}'
           slot-name: 'Production'
           package: receiver
 
       - name: Restart app
         run: |
-          az functionapp restart --name '${{ env.PREFIX }}${{ env.GITHUB_RUN_ID }}receiver-app-${{ matrix.number }}' --resource-group ${{ env.RESOURCEGROUPNAME_RECEIVERS }}
+          az functionapp restart --name '${{ env.PREFIX }}receiver-app-${{ matrix.number }}' --resource-group ${{ env.RESOURCEGROUPNAME_RECEIVERS }}
 
   test:
     needs: [ deploy-estimator, deploy-receivers ]
@@ -169,8 +169,8 @@ jobs:
       - name: Execute Stress Test
         shell: pwsh
         run: |
-          $id = '${{ env.GITHUB_RUN_ID }}'
-          .\src\Environment\runTests.ps1 -url https://sbe$id-app.azurewebsites.net/api/orchestrators/startStressTests -messages ${{ env.MESSAGES }} -min ${{ env.MIN_SIZE }} -max ${{ env.MAX_SIZE }} -resourceGroupName ${{ env.RESOURCEGROUPNAME }} -serviceBusName ${{ env.PREFIX }}${{ env.GITHUB_RUN_ID }}-bus
+          $id = ''
+          .\src\Environment\runTests.ps1 -url https://sbe$id-app.azurewebsites.net/api/orchestrators/startStressTests -messages ${{ env.MESSAGES }} -min ${{ env.MIN_SIZE }} -max ${{ env.MAX_SIZE }} -resourceGroupName ${{ env.RESOURCEGROUPNAME }} -serviceBusName ${{ env.PREFIX }}-bus
 
   cleanup:
     needs: test
