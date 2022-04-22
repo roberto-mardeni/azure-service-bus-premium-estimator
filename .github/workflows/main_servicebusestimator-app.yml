@@ -27,6 +27,9 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+      - name: print environment variables
+        run: env
+        
       - name: Checkout GitHub Action
         uses: actions/checkout@v2
 
