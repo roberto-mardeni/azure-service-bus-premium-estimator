@@ -47,9 +47,9 @@ namespace My.AzureServiceBusEstimator
         {
             List<int> payloads = new List<int>();
 
-            log.LogInformation($"Preparing {stressTestParameters.NumberOfTests} payloads!");
+            log.LogInformation($"Preparing {stressTestParameters.NumberOfMessages} payloads!");
 
-            for (int i = 0; i < stressTestParameters.NumberOfTests; i++)
+            for (int i = 0; i < stressTestParameters.NumberOfMessages; i++)
             {
                 payloads.Add(random.Next(stressTestParameters.MinMessageSize, stressTestParameters.MaxMessageSize));
             }

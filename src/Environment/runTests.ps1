@@ -1,6 +1,6 @@
 param(
     $url="",
-    $tests=10000,
+    $messages=10000,
     $min=1,
     $max=20,
     $waitTime=5,
@@ -11,7 +11,7 @@ param(
 Write-Host "Starting Test"
 
 $payload = @{
-    numberOfTests = $tests
+    numberOfMessages = $messages
     minMessageSize = $min
     maxMessageSize = $max
 }

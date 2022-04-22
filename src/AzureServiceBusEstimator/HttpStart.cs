@@ -23,7 +23,7 @@ namespace My.AzureServiceBusEstimator
             // Function input comes from the request content.
             var eventData = JsonConvert.DeserializeObject<StressTestParameters>(await req.ReadAsStringAsync());
 
-            if (eventData.NumberOfTests >= 1 && eventData.MinMessageSize >= 1 && eventData.MaxMessageSize <= 20)
+            if (eventData.NumberOfMessages >= 1 && eventData.MinMessageSize >= 1 && eventData.MaxMessageSize <= 20)
             {
                 //req.Host
                 string instanceId = await starter.StartNewAsync(functionName, eventData);
