@@ -78,7 +78,7 @@ jobs:
           resourceGroupName: ${{ env.RESOURCEGROUPNAME }}
           template: https://raw.githubusercontent.com/roberto-mardeni/azure-service-bus-premium-estimator/main/src/Environment/azuredeploy.json
           deploymentName: 'AzureDeploy-${{ steps.time.outputs.time }}'
-          parameters: prefix=${{ env.GITHUB_RUN_ID }} receiversResourceGroup=${{ env.RESOURCEGROUPNAME_RECEIVERS }} numberOfReceivers=${{ env.NUMBER_OF_RECEIVERS }}
+          parameters: prefix=sbe${{ env.GITHUB_RUN_ID }} receiversResourceGroup=${{ env.RESOURCEGROUPNAME_RECEIVERS }} numberOfReceivers=${{ env.NUMBER_OF_RECEIVERS }}
 
       - name: Upload estimator artifact
         uses: actions/upload-artifact@v3
@@ -169,7 +169,7 @@ jobs:
       - name: Execute Stress Test
         shell: pwsh
         run: |
-          .\src\Environment\runTests.ps1 -url https://${{ env.GITHUB_RUN_ID }}-app.azurewebsites.net/api/orchestrators/startStressTests -messages ${{ env.MESSAGES }} -min ${{ env.MIN_SIZE }} -max ${{ env.MAX_SIZE }} -resourceGroupName ${{ env.RESOURCEGROUPNAME }} -serviceBusName ${{ env.SERVICEBUSNAME }}
+          .\src\Environment\runTests.ps1 -url https://sbe${{ env.GITHUB_RUN_ID }}-app.azurewebsites.net/api/orchestrators/startStressTests -messages ${{ env.MESSAGES }} -min ${{ env.MIN_SIZE }} -max ${{ env.MAX_SIZE }} -resourceGroupName ${{ env.RESOURCEGROUPNAME }} -serviceBusName ${{ env.SERVICEBUSNAME }}
 
   cleanup:
     needs: test
