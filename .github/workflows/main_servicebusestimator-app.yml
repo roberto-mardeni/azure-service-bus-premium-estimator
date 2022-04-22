@@ -39,10 +39,10 @@ env:
   ESTIMATOR_PACKAGE_PATH: 'src/AzureServiceBusEstimator'
   RECEIVER_PACKAGE_PATH: 'src/AzureServiceBusReceiver'
   DOTNET_VERSION: '6.0.x'
-  NUMBER_OF_TESTS: 2000
-  MIN_SIZE: 1
-  MAX_SIZE: 20
-  NUMBER_OF_RECEIVERS: 2
+  NUMBER_OF_TESTS: ${{github.event.inputs.tests}}
+  MIN_SIZE: ${{github.event.inputs.min}}
+  MAX_SIZE: ${{github.event.inputs.max}}
+  NUMBER_OF_RECEIVERS: ${{github.event.inputs.receivers}}
 
 jobs:
   build:
