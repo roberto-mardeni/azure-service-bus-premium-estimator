@@ -8,18 +8,10 @@
         "healthCheckThreshold": 6,
         "counterThreshold": 0.80
     },
-    "logging": {
-        "applicationInsights": {
-            "samplingSettings": {
-                "isEnabled": true,
-                "excludedTypes": "Request"
-            }
-        }
-    },
     "extensions": {
         "serviceBus": {
             "clientRetryOptions":{
-                "tryTimeout": "00:10:00",
+                "tryTimeout": "00:01:00",
                 "maxRetries": 5
             },
             "autoCompleteMessages": true
