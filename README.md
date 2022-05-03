@@ -25,7 +25,7 @@ The workflow will run with the following arguments:
 
 You can review the metrics in the Application Insights resource, like shown below:
 
-![Metrics](docs/metrics.jpg)
+![Metrics](docs/Metrics.jpg)
 
 The recommendation for number of capacity units will be available in the **Test** stage, like shown below:
 
