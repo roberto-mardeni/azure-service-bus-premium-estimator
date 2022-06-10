@@ -30,3 +30,7 @@ You can review the metrics in the Application Insights resource, like shown belo
 The recommendation for number of capacity units will be available in the **Test** stage, like shown below:
 
 ![Results](docs/results.jpg)
+
+## References
+
+Diagrams generated using [mingrammer/diagrams](https://github.com/mingrammer/diagrams)
